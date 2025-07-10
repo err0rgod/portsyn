@@ -11,7 +11,7 @@ for port in ports:
     s.settimeout(1)
     result = s.connect_ex((tar,port))
 
-    if result == 0:
+    if result s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)== 0:
         print(f"the port {port} is Open")
     else:
         print(f"port {port} not open. Failure.")
