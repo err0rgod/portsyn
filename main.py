@@ -7,7 +7,7 @@ p=int(input("Enter the port number: "))
 t=int(input("Enter number of threads: "))
 ports = range(1,p)
 
-
+open_ports= []
 
 
 def port_scan(tar,port):
@@ -19,7 +19,8 @@ def port_scan(tar,port):
 
         if result == 0 :
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            print(f"the port {port} is Open")
+            print(f"[+] Port {port} is open", end='\r')
+            open_ports.append(port)
         else:
             print(f"port {port} not open. Failure.")
         s.close()
@@ -53,3 +54,13 @@ print(f"\n Scanning {tar} (ports 1-{p}) ")
 multi_threading(tar,ports,t)
 
 print(f"The scan is completed")
+
+
+
+if open_ports:
+    print("OPEN PORTS FOUND:")
+    for port in sorted(open_ports):
+        print(f"→ Port {port}")
+else:
+    print("No open ports found.")
+print("-" * 30)
