@@ -7,8 +7,6 @@ ports = range(1,p)
 
 
 
-    
-
 
 def port_scan(tar,ports):
     try:
