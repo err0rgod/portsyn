@@ -45,4 +45,11 @@ def multi_threading(tar,ports,max_threads=10):
         thread.join()
 
 
+
+
+
+print(f"\n Scanning {tar} (ports 1-{p}) ")
+
 multi_threading(tar,ports,t)
+
+print(f"The scan is completed")
