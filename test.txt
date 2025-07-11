@@ -1,11 +1,47 @@
-def port_scanner(target, ports, max_threads=100):
+import socket
+import threading
+
+# User Input
+target = input("Enter the target: ")
+max_port = int(input("Enter the max port number: "))
+thread_count = int(input("Enter number of threads: "))
+ports = range(1, max_port + 1)  # Include max_port
+
+# --- Single Port Scanner ---
+def scan_port(target, port):
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        result = sock.connect_ex((target, port))
+        
+        if result == 0:
+            print(f"[✅] Port {port} is OPEN")
+        # (Optional) Remove 'else' to hide closed ports
+        else:
+            print(f"[❌] Port {port} is closed", end='\r')  # Overwrite line
+        sock.close()
+    except Exception as e:
+        print(f"[⚠️] Error scanning port {port}: {str(e)}")
+
+# --- Thread Manager ---
+def run_scanner(target, ports, max_threads=10):
     threads = []
-    for port in ports:
-        while threading.active_count() > max_threads:  # Avoid overloading
-            pass
-        thread = threading.Thread(target=scan_port, args=(target, port))
-        threads.append(thread)
-        thread.start()
     
+    for port in ports:
+        # Wait if too many threads are running
+        while threading.active_count() > max_threads:
+            pass
+        
+        # Create & start thread for THIS PORT only
+        thread = threading.Thread(target=scan_port, args=(target, port))
+        thread.start()
+        threads.append(thread)
+    
+    # Wait for all threads to finish
     for thread in threads:
-        thread.join()  # Wait for all threads to finish
+        thread.join()
+
+# --- Run Scanner ---
+print(f"\n[🔍] Scanning {target} (Ports 1-{max_port}) with {thread_count} threads...")
+run_scanner(target, ports, thread_count)
+print("\n[🎉] Scan completed!")
