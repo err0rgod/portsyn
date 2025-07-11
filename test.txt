@@ -1,0 +1,11 @@
+def port_scanner(target, ports, max_threads=100):
+    threads = []
+    for port in ports:
+        while threading.active_count() > max_threads:  # Avoid overloading
+            pass
+        thread = threading.Thread(target=scan_port, args=(target, port))
+        threads.append(thread)
+        thread.start()
+    
+    for thread in threads:
+        thread.join()  # Wait for all threads to finish
