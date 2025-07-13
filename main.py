@@ -46,7 +46,11 @@ def multi_threading(tar,ports,max_threads=10):
         thread.join()
 
 
-
+def service_detect (port):
+    try:
+        return socket.getservbyport(port)
+    except:
+        return "Unknown"
 
 
 print(f"\n Scanning {tar} (ports 1-{p}) ")
