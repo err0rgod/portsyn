@@ -21,9 +21,10 @@ def port_scan(tar,port):
         if result == 0 :
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             ser=service_detect(port)
-            print(f"[+] Port {port} is open : {ser}", end='\r')
+            banner = grab_ban(s)
+            print(f"[+] Port {port} is open : {ser}  :  {banner[:50]}", end='\r')
             open_ports.append(port)
-            serv_dtc.append(ser)
+            serv_dtc.append((ser,banner))
         else:
             print(f"port {port} not open. Failure.")
         s.close()
