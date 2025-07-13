@@ -2,9 +2,9 @@ import argparse
 import socket
 import threading
 
-tar=input("Enter the target: ")
-p=int(input("Enter the port number: "))
-t=int(input("Enter number of threads: "))
+tar="steminfinity.in"#input("Enter the target: ")
+p=200#int(input("Enter the port number: "))
+t=30#int(input("Enter number of threads: "))
 ports = range(1,p)
 
 open_ports= []
@@ -62,12 +62,13 @@ multi_threading(tar,ports,t)
 
 print(f"The scan is completed")
 
-
+tmp = 0
 
 if open_ports:
     print("OPEN PORTS FOUND:")
     for port in sorted(open_ports):
-        print(f"→ Port {port}")
+        port = tmp
+        print(f"→ Port {port} : {serv_dtc[tmp]}")
 else:
     print("No open ports found.")
 print("-" * 30)
