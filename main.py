@@ -2,7 +2,7 @@ import argparse
 import socket
 import threading
 import socks
-from urllib.request import proxyhandler , build_opener
+#from urllib.request import proxyhandler , build_opener
 from itertools import cycle
 
 tar="steminfinity.in"#input("Enter the target: ")
@@ -23,7 +23,7 @@ PROXY = {
 }
 USE_PROXY = True  # Toggle proxy on/off
 
-proxy_ip = 127.0.0.1
+proxy_ip = "http://127.0.0.1"
 proxy_port = 1080
 
 
@@ -35,9 +35,9 @@ def next_proxy():
 
 def port_scan(tar,port):
     try:
-        if USE_PROXY:
+        '''if USE_PROXY:
             socks.set_default_proxy(socks.SOCKS5, proxy_ip, 1080)
-            socket.socket = socks.socksocket
+            socket.socket = socks.socksocket'''
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         s.settimeout(1)
         result = s.connect_ex((tar,port))
