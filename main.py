@@ -8,6 +8,7 @@ t=int(input("Enter number of threads: "))
 ports = range(1,p)
 
 open_ports= []
+serv_dtc = []
 
 
 def port_scan(tar,port):
@@ -19,8 +20,10 @@ def port_scan(tar,port):
 
         if result == 0 :
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            print(f"[+] Port {port} is open", end='\r')
+            ser=service_detect(port)
+            print(f"[+] Port {port} is open : {ser}", end='\r')
             open_ports.append(port)
+            serv_dtc.append(ser)
         else:
             print(f"port {port} not open. Failure.")
         s.close()
@@ -68,3 +71,6 @@ if open_ports:
 else:
     print("No open ports found.")
 print("-" * 30)
+
+
+print(serv_dtc)
