@@ -62,13 +62,11 @@ multi_threading(tar,ports,t)
 
 print(f"The scan is completed")
 
-tmp = 0
-
 if open_ports:
     print("OPEN PORTS FOUND:")
-    for port in sorted(open_ports):
-        port = tmp
-        print(f"→ Port {port} : {serv_dtc[tmp]}")
+    for port,service in zip(sorted(open_ports)):
+       
+        print(f"→ Port {port} : {service} ")
 else:
     print("No open ports found.")
 print("-" * 30)
