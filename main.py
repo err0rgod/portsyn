@@ -56,6 +56,24 @@ def service_detect (port):
         return "Unknown"
 
 
+
+def grab_ban(socket_conn, timeout =1):
+    try:
+        socket_conn.settimeout(timeout)
+
+        socket_conn.send(b"HELLO\r\n")
+        return socket_conn.recv(1024).decode(errors="ignore").strip()
+    
+    except:
+        return "No banner Grabbed"
+
+
+
+
+
+
+
+
 print(f"\n Scanning {tar} (ports 1-{p}) ")
 
 multi_threading(tar,ports,t)

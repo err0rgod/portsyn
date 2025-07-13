@@ -3,3 +3,14 @@ add service scan
 add proxies
 
 use a web ui and full file about a report in nascar
+
+
+Protocol-Specific Checks
+HTTP/HTTPS: Check for open directories (/admin, /phpmyadmin)
+
+SSH: Test for weak credentials (Caution: Ethical/Legal issues!)
+
+FTP: Check for anonymous login
+
+
+A. Service Fingerprinting
