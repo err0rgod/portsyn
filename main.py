@@ -1,6 +1,8 @@
 import argparse
 import socket
 import threading
+import socks
+from urllib.request import proxyhandler , build_opener
 
 tar="steminfinity.in"#input("Enter the target: ")
 p=200#int(input("Enter the port number: "))
@@ -11,9 +13,22 @@ open_ports= []
 serv_dtc = []
 
 
+
+PROXY = {
+    "http": "http://66.235.200.184:80",  # HTTP proxy
+    "https": "https://1.0.171.213:8080",
+    "socks4": "ssocks4://185.59.100.55:1080",
+    "socks5": "socks5://124.220.20.17:13019"
+}
+USE_PROXY = True  # Toggle proxy on/off
+
+
+
 def port_scan(tar,port):
     try:
-        
+        if USE_PROXY:
+            socks.set_default_proxy(socks.SOCKS5, "proxy_ip", 1080)
+            socket.socket = socks.socksocket
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         s.settimeout(1)
         result = s.connect_ex((tar,port))
