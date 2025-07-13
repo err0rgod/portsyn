@@ -64,12 +64,10 @@ print(f"The scan is completed")
 
 if open_ports:
     print("OPEN PORTS FOUND:")
-    for port,service in zip(sorted(open_ports)):
+    for port,service in zip(sorted(open_ports),serv_dtc):
        
         print(f"→ Port {port} : {service} ")
 else:
     print("No open ports found.")
 print("-" * 30)
 
-
-print(serv_dtc)
