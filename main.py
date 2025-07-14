@@ -6,7 +6,7 @@ import socks
 from itertools import cycle
 
 tar="remitly.com"#input("Enter the target: ")
-p=200#int(input("Enter the port number: "))
+p=20#int(input("Enter the port number: "))
 t=30#int(input("Enter number of threads: "))
 ports = range(1,p)
 
@@ -23,7 +23,7 @@ PROXY = {
 }
 USE_PROXY = True  # Toggle proxy on/off
 
-proxy_ip = "http://127.0.0.1"
+proxy_ip = "185.59.100.55"
 proxy_port = 1080
 
 
@@ -35,11 +35,11 @@ def next_proxy():
 
 def port_scan(tar,port):
     try:
-        '''if USE_PROXY:
+        if USE_PROXY:
             socks.set_default_proxy(socks.SOCKS5, proxy_ip, 1080)
-            socket.socket = socks.socksocket'''
+            socket.socket = socks.socksocket
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        s.settimeout(1)
+        s.settimeout(4)
         result = s.connect_ex((tar,port))
 
         if result == 0 :
