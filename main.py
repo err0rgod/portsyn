@@ -6,7 +6,7 @@ import socks
 from itertools import cycle
 
 tar="steminfinity.in"#input("Enter the target: ")
-p=20#int(input("Enter the port number: "))
+p=50#int(input("Enter the port number: "))
 t=30#int(input("Enter number of threads: "))
 ports = range(1,p)
 
@@ -14,13 +14,6 @@ open_ports= []
 serv_dtc = []
 
 
-
-PROXY = {
-    "http": "http://66.235.200.184:80",  # HTTP proxy
-    "https": "https://1.0.171.213:8080",
-    "socks4": "socks4://185.59.100.55:1080",
-    "socks5": "socks5://124.220.20.17:13019"
-}
 USE_PROXY = True  # Toggle proxy on/off
 
 proxy_ip = "185.59.100.55"
@@ -28,9 +21,6 @@ proxy_port = 1080
 
 
 #proxy_pool = cycle(PROXY)
-
-def next_proxy():
-    return next(proxy_pool)
 
 
 def port_scan(tar,port):
@@ -44,6 +34,7 @@ def port_scan(tar,port):
 
         if result == 0 :
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.settimeout(10)
             ser=service_detect(port)
             banner = grab_ban(s)
             print(f"[+] Port {port} is open : {ser}  :  {banner[:50]}", end='\r')
