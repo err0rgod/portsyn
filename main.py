@@ -18,7 +18,7 @@ serv_dtc = []
 PROXY = {
     "http": "http://66.235.200.184:80",  # HTTP proxy
     "https": "https://1.0.171.213:8080",
-    "socks4": "ssocks4://185.59.100.55:1080",
+    "socks4": "socks4://185.59.100.55:1080",
     "socks5": "socks5://124.220.20.17:13019"
 }
 USE_PROXY = True  # Toggle proxy on/off

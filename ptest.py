@@ -2,7 +2,7 @@ import socks
 import socket
 
 # Configure proxy (replace with your details)
-PROXY_IP = "127.0.0.1"  # Proxy server IP
+PROXY_IP = "185.59.100.55"  # Proxy server IP
 PROXY_PORT = 1080              # Default SOCKS5 port
 '''USERNAME = "your_username"     # Leave empty if no auth
 PASSWORD = "your_password"'''     # Leave empty if no auth
