@@ -39,7 +39,7 @@ def port_scan(tar,port):
             socks.set_default_proxy(socks.SOCKS5, proxy_ip, 1080)
             socket.socket = socks.socksocket
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        s.settimeout(4)
+        s.settimeout(1)
         result = s.connect_ex((tar,port))
 
         if result == 0 :
