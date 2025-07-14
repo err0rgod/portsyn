@@ -9,27 +9,50 @@ import socks
 from itertools import cycle
 #looping over the list of proxies
 
-tar="steminfinity.in"#input("Enter the target: ")
-p=50#int(input("Enter the port number: "))
-t=30#int(input("Enter number of threads: "))
-ports = range(1,p)
+
+
+parser = argparse.ArgumentParser(description="Advanced port scanner by err0rgod")
+
+parser.add_argument("-t","--target",type=str,required=True,help="Enter the target to scan the port")
+parser.add_argument("-p","--portse",type=int, required=True,help="Enter the start and end of ports to scan")
+parser.add_argument("-c","--concurrency",type=int,default=10,help="Enter the number of threads")
+parser.add_argument("-np","--no_proxy",default=True,action="store_false",help="For not using proxy system")
+
+args = parser.parse_args()
+
+
+
 
 open_ports= []    #storing the list of open ports to show up in the end
 serv_dtc = []      #same with service detection 
 
 
-USE_PROXY = True  # Toggle proxy on/off
+USE_PROXY = args.no_proxy # Toggle proxy on/off
 
 proxy_ip = "185.59.100.55" #obiviously proxy ip
 proxy_port = 1080
 
+#user input through argparse
 
-#proxy_pool = cycle(PROXY)
+
+
+tar = args.target
+p = args.portse
+t = args.concurrency
+ports = range(1,p)
+#tar="steminfinity.in"#input("Enter the target: ")
+#p=50#int(input("Enter the port number: "))
+#t=30#int(input("Enter number of threads: "))
+#ports = range(1,p)
+
+temp = "No proxy"
 
 
 def port_scan(tar,port):          #main function for scanning ports and connecting other functions
     try:
-        if USE_PROXY:               #for the switch to turn on/off proxy
+        if USE_PROXY:   
+            temp = proxy_ip 
+            s = socket.socket()           #for the switch to turn on/off proxy
             socks.set_default_proxy(socks.SOCKS5, proxy_ip, 1080) #setting up proxy ip and port
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
           #initializing the connection from the default proxy setted up in above line if switch is on the will connect to proxy otherwise will connet to system proxy
@@ -42,13 +65,15 @@ def port_scan(tar,port):          #main function for scanning ports and connecti
             ser=service_detect(port)         #calling service detection func 
             banner = grab_ban(s)                #calling banner garabbing func
 
-            print(f"[+] Port {port} is open : {ser}  :  {banner[:50]} : proxy :  {proxy_ip}", end='\r')         # providing user output
+            proxy_info = proxy_ip if USE_PROXY else "No proxy used"
+
+            print(f"[+] Port {port} is open : {ser}  :  {banner[:50]} : proxy :  {proxy_info}", end='\r')         # providing user output
 
 
             open_ports.append(port)                
             serv_dtc.append((ser,banner))           #storing the port service and banners in a list mentioned above in the program
         else:
-            print(f"port {port} not open. Failure. with proxy {proxy_ip}")
+            print(f"port {port} not open. Failure.")
         s.close()
     
     except Exception as e:
