@@ -27,14 +27,17 @@ def port_scan(tar,port):
     try:
         if USE_PROXY:
             socks.set_default_proxy(socks.SOCKS5, proxy_ip, 1080)
-            socket.socket = socks.socksocket
+            #socket.socket = socks.socksocket
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
         s.settimeout(1)
+        print(f"[>] Scanning port {port} using proxy {proxy_ip}:{proxy_port}")
+
         result = s.connect_ex((tar,port))
 
         if result == 0 :
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.settimeout(10)
+
+            #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            #s.settimeout(10)
             ser=service_detect(port)
             banner = grab_ban(s)
             print(f"[+] Port {port} is open : {ser}  :  {banner[:50]}", end='\r')
