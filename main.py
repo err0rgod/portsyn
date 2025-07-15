@@ -41,6 +41,11 @@ proxy_port = 1080
 
 #user input through argparse
 
+PROXY_LIST = [
+    185.59.100.55:1080
+
+]
+
 
 
 tar = args.target
@@ -59,6 +64,28 @@ try:
 except ValueError:
     print("Error : Invaluid Port format. Use start - end (eg. -> 1-100)")
     exit(1)
+
+
+
+def get_random_proxy():
+    """Returns parsed proxy dict (host, port, auth)"""
+    proxy_str = random.choice(PROXY_LIST)
+    parts = proxy_str.split(":")
+    
+    proxy = {
+        "host": parts[0],
+        "port": int(parts[1])
+    }
+    
+    if len(parts) > 2:  # Has auth
+        proxy["username"] = parts[2]
+        proxy["password"] = parts[3]
+    
+    return proxy
+
+
+
+
 
 
 def port_scan(tar,port):          #main function for scanning ports and connecting other functions
@@ -81,11 +108,11 @@ def port_scan(tar,port):          #main function for scanning ports and connecti
 
             proxy_info = proxy_ip if USE_PROXY else "No proxy used"
 
-            print(f"[+] Port {port} is open : {ser}  :  {banner[:50]} : proxy :  {proxy_info}", end='\r')         # providing user output
+            print(f"[+] Port {port} is open : {service}  :  {banner[:50]} : proxy :  {proxy_info}", end='\r')         # providing user output
 
 
             open_ports.append(port)                
-            serv_dtc.append((ser,banner))  
+            serv_dtc.append((service,banner))  
             
             if args.detailed:
                 print(f"[+] Port : {port} open : {service}")
@@ -98,6 +125,34 @@ def port_scan(tar,port):          #main function for scanning ports and connecti
     except Exception as e:
         if args.detailed:
             print(f"Error while scanning port {port} {e}")
+
+
+
+def proxy_scan(target, port):
+    max_retries = 3
+    for attempt in range(max_retries):
+        proxy = get_random_proxy()
+        try:
+            s = socks.socksocket()
+            s.set_proxy(
+                socks.SOCKS5,
+                proxy["host"],
+                proxy["port"],
+                username=proxy.get("username"),
+                password=proxy.get("password")
+            )
+            s.settimeout(3)
+            
+            if s.connect_ex((target, port)) == 0:
+                banner = grab_banner(s) if (args.banner or args.detailed) else ""
+                s.close()
+                return True, banner
+        except Exception as e:
+            print(f"Proxy {proxy['host']} failed (attempt {attempt+1}): {e}")
+            continue
+        finally:
+            s.close()
+    return False, "All proxies failed"
 
 
 
@@ -136,7 +191,7 @@ def grab_ban(socket_conn, timeout =1):            #basic banner grabbing functio
         return "No banner Grabbed"
 
 
-def show_result(open_ports, serv_dtc):
+def show_result():
     print(f"Results for {tar}")
 
     if not open_ports:
@@ -159,6 +214,15 @@ def show_result(open_ports, serv_dtc):
         print("\n"+ "="*50)
         print(f"Breif Scan Results for {args.target}")
         print("="*50)
+        for port, (service, banner) in zip(open_ports,serv_dtc):
+            clean_banner = banner.split('\r\n')[0][:60] if banner else ""
+            print(f"-> Port {port} : {service} | {clean_banner}")
+
+
+    else:
+        print("\nOpen Ports:")
+        for port, (service, _) in zip(open_ports,serv_dtc):
+            print(f"-> Port {port} : {service}")
 
 
     
@@ -172,13 +236,13 @@ def show_result(open_ports, serv_dtc):
 
 #end program code to be executed for providing smooth results to user
 
-print(f"\n Scanning {tar} (ports 1-{p}) ")
+print(f"\n Scanning {tar} (ports {args.portse}) ")
 
 multi_threading(tar,ports,t)
+show_result()
 
-print(f"The scan is completed")
 
-if open_ports:
+'''if open_ports:
     print("OPEN PORTS FOUND:")
     for port,service in zip(sorted(open_ports),serv_dtc):
        
@@ -186,4 +250,6 @@ if open_ports:
 else:
     print("No open ports found.")
 print("-" * 30)
+'''
 
+print(f"The scan is completed")
