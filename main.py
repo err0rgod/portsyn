@@ -8,15 +8,21 @@ import socks
 #for using socks5,4 to switch proxies 
 from itertools import cycle
 #looping over the list of proxies
+from sys import exit
 
 
 
 parser = argparse.ArgumentParser(description="Advanced port scanner by err0rgod")
 
 parser.add_argument("-t","--target",type=str,required=True,help="Enter the target to scan the port")
-parser.add_argument("-p","--portse",type=int, required=True,help="Enter the start and end of ports to scan")
+parser.add_argument("-p","--portse",type=int, default=1024,help="Enter the start and end of ports to scan")
 parser.add_argument("-c","--concurrency",type=int,default=10,help="Enter the number of threads")
 parser.add_argument("-np","--no_proxy",default=True,action="store_false",help="For not using proxy system")
+
+
+output_group =  parser.add_mutually_exclusive_group()
+parser.add_argument("-b", "--banner",action="store_true",help="Show brief banner info")
+parser.add_argument("-d", "--detailed",action="store_true",help="Show full banner output")
 
 args = parser.parse_args()
 
@@ -63,7 +69,8 @@ def port_scan(tar,port):          #main function for scanning ports and connecti
         if result == 0 :           #if the target and port is alive then this statement will execute
  
             ser=service_detect(port)         #calling service detection func 
-            banner = grab_ban(s)                #calling banner garabbing func
+            banner = grab_ban(s) if (args.banner or args.detailed) else ""
+                        #calling banner garabbing func
 
             proxy_info = proxy_ip if USE_PROXY else "No proxy used"
 
@@ -71,7 +78,8 @@ def port_scan(tar,port):          #main function for scanning ports and connecti
 
 
             open_ports.append(port)                
-            serv_dtc.append((ser,banner))           #storing the port service and banners in a list mentioned above in the program
+            serv_dtc.append((ser,banner))  
+            return port , service ,  banner             #storing the port service and banners in a list mentioned above in the program
         else:
             print(f"port {port} not open. Failure.")
         s.close()
@@ -114,6 +122,35 @@ def grab_ban(socket_conn, timeout =1):            #basic banner grabbing functio
     
     except:
         return "No banner Grabbed"
+
+
+def show_result(open_ports, serv_dtc):
+    print(f"Results for {tar}")
+
+    if not open_ports:
+        print("No open ports Found")
+        return
+    
+    for port, (service, banner) in zip(open_ports, serv_dtc):
+        # Simple mode (no -b or -d)
+        if not args.banner and not args.detailed:
+            print(f"→ Port {port}: {service}")
+        
+        # Brief banner mode (-b)
+        elif args.banner and banner != "No banner Grabbed":
+            print(f"→ Port {port}: {service} | {banner.splitlines()[0][:60]}...")
+        
+        # Detailed mode (-d)
+        elif args.detailed:
+            print(f"\n[Port {port}] {service.upper()}")
+            if banner != "No banner Grabbed":
+                print("-"*40)
+                print(banner)
+        
+
+
+
+    
 
 
 #end program code to be executed for providing smooth results to user
