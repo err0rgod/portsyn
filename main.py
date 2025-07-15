@@ -110,7 +110,7 @@ def grab_ban(socket_conn, timeout =1):            #basic banner grabbing functio
         socket_conn.settimeout(timeout)
 
         socket_conn.send(b"HELLO\r\n")
-        return socket_conn.recv(1024).decode(errors="ignore").strip()
+        return socket_conn.recv(100).decode(errors="ignore").strip()
     
     except:
         return "No banner Grabbed"

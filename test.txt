@@ -1,6 +1,10 @@
-add service scan 
+do something about the banner grabbing junk
 
 add proxies
+
+detailed 
+
+banner grab
 
 use a web ui and full file about a report in nascar
 
