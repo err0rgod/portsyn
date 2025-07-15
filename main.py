@@ -42,7 +42,8 @@ proxy_port = 1080
 #user input through argparse
 
 PROXY_LIST = [
-    185.59.100.55:1080
+    "185.59.100.55:1080",
+    "185.59.100.55:1080"
 
 ]
 
@@ -162,7 +163,7 @@ def multi_threading(tar,ports,max_threads=10):          #for multi threading
         while threading.active_count() > max_threads:
             pass
 
-        thread  = threading.Thread(target=port_scan, args=(tar,port))
+        thread  = threading.Thread(target=scan, args=(tar,port))
         thread.start()
         threads.append(thread)
         
@@ -228,7 +229,11 @@ def show_result():
     
     
         
-
+def scan(target, port):
+    if args.no_proxy:  # When --no-proxy is used
+        return port_scan(target, port)  # Original direct scan
+    else:  # Default behavior (proxy rotation)
+        return proxy_scan(target, port)  # New proxy logic
 
 
     
