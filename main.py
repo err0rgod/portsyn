@@ -15,14 +15,15 @@ from sys import exit
 parser = argparse.ArgumentParser(description="Advanced port scanner by err0rgod")
 
 parser.add_argument("-t","--target",type=str,required=True,help="Enter the target to scan the port")
-parser.add_argument("-p","--portse",type=int, default=1024,help="Enter the start and end of ports to scan")
+parser.add_argument("-p","--portse",type=str, default="1-1024",help="Enter the start and end of ports to scan")
 parser.add_argument("-c","--concurrency",type=int,default=10,help="Enter the number of threads")
 parser.add_argument("-np","--no_proxy",default=True,action="store_false",help="For not using proxy system")
 
+#mutually exclusive parsers 
 
 output_group =  parser.add_mutually_exclusive_group()
-parser.add_argument("-b", "--banner",action="store_true",help="Show brief banner info")
-parser.add_argument("-d", "--detailed",action="store_true",help="Show full banner output")
+output_group.add_argument("-b", "--banner",action="store_true",help="Show brief banner info")
+output_group.add_argument("-d", "--detailed",action="store_true",help="Show full banner output")
 
 args = parser.parse_args()
 
@@ -43,21 +44,27 @@ proxy_port = 1080
 
 
 tar = args.target
-p = args.portse
 t = args.concurrency
-ports = range(1,p)
 #tar="steminfinity.in"#input("Enter the target: ")
 #p=50#int(input("Enter the port number: "))
 #t=30#int(input("Enter number of threads: "))
 #ports = range(1,p)
 
-temp = "No proxy"
+
+
+try:
+    start_port, end_port = map(int, args.portse.split('-'))
+    ports = range(start_port, end_port + 1)
+
+except ValueError:
+    print("Error : Invaluid Port format. Use start - end (eg. -> 1-100)")
+    exit(1)
 
 
 def port_scan(tar,port):          #main function for scanning ports and connecting other functions
     try:
         if USE_PROXY:   
-            temp = proxy_ip 
+            
             s = socket.socket()           #for the switch to turn on/off proxy
             socks.set_default_proxy(socks.SOCKS5, proxy_ip, 1080) #setting up proxy ip and port
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
@@ -68,7 +75,7 @@ def port_scan(tar,port):          #main function for scanning ports and connecti
 
         if result == 0 :           #if the target and port is alive then this statement will execute
  
-            ser=service_detect(port)         #calling service detection func 
+            service=service_detect(port)         #calling service detection func 
             banner = grab_ban(s) if (args.banner or args.detailed) else ""
                         #calling banner garabbing func
 
@@ -79,13 +86,18 @@ def port_scan(tar,port):          #main function for scanning ports and connecti
 
             open_ports.append(port)                
             serv_dtc.append((ser,banner))  
-            return port , service ,  banner             #storing the port service and banners in a list mentioned above in the program
+            
+            if args.detailed:
+                print(f"[+] Port : {port} open : {service}")
+            elif args.banner:
+                print(f"[+] Port : {port} open : {service}",end='\r')          #storing the port service and banners in a list mentioned above in the program
         else:
             print(f"port {port} not open. Failure.")
         s.close()
     
     except Exception as e:
-        print(f"Error while scanning port {port} {e}")
+        if args.detailed:
+            print(f"Error while scanning port {port} {e}")
 
 
 
@@ -118,7 +130,7 @@ def grab_ban(socket_conn, timeout =1):            #basic banner grabbing functio
         socket_conn.settimeout(timeout)
 
         socket_conn.send(b"HELLO\r\n")
-        return socket_conn.recv(100).decode(errors="ignore").strip()
+        return socket_conn.recv(1024).decode(errors="ignore").strip()
     
     except:
         return "No banner Grabbed"
@@ -131,21 +143,26 @@ def show_result(open_ports, serv_dtc):
         print("No open ports Found")
         return
     
-    for port, (service, banner) in zip(open_ports, serv_dtc):
-        # Simple mode (no -b or -d)
-        if not args.banner and not args.detailed:
-            print(f"→ Port {port}: {service}")
-        
-        # Brief banner mode (-b)
-        elif args.banner and banner != "No banner Grabbed":
-            print(f"→ Port {port}: {service} | {banner.splitlines()[0][:60]}...")
-        
-        # Detailed mode (-d)
-        elif args.detailed:
+    if args.detailed:
+        print("\n"+ "="*50)
+        print(f"Detailed Scan Results for {args.target}")
+        print("="*50)
+
+        for port, (service,banner) in zip(open_ports, serv_dtc):
             print(f"\n[Port {port}] {service.upper()}")
-            if banner != "No banner Grabbed":
-                print("-"*40)
+            if banner and banner != "No Banner Grabbed":
+                print("-"*50)
                 print(banner)
+
+
+    elif args.banner:
+        print("\n"+ "="*50)
+        print(f"Breif Scan Results for {args.target}")
+        print("="*50)
+
+
+    
+    
         
 
 
