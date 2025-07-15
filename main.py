@@ -90,10 +90,10 @@ def get_random_proxy():
 
 def port_scan(tar,port):          #main function for scanning ports and connecting other functions
     try:
-        if USE_PROXY:   
+        '''if USE_PROXY:   
             
             s = socket.socket()           #for the switch to turn on/off proxy
-            socks.set_default_proxy(socks.SOCKS5, proxy_ip, 1080) #setting up proxy ip and port
+            socks.set_default_proxy(socks.SOCKS5, proxy_ip, 1080)''' #setting up proxy ip and port
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM) 
           #initializing the connection from the default proxy setted up in above line if switch is on the will connect to proxy otherwise will connet to system proxy
         s.settimeout(1)  
