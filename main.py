@@ -10,6 +10,8 @@ from itertools import cycle
 #looping over the list of proxies
 from sys import exit
 
+import random
+
 
 
 parser = argparse.ArgumentParser(description="Advanced port scanner by err0rgod")
@@ -17,7 +19,7 @@ parser = argparse.ArgumentParser(description="Advanced port scanner by err0rgod"
 parser.add_argument("-t","--target",type=str,required=True,help="Enter the target to scan the port")
 parser.add_argument("-p","--portse",type=str, default="1-1024",help="Enter the start and end of ports to scan")
 parser.add_argument("-c","--concurrency",type=int,default=10,help="Enter the number of threads")
-parser.add_argument("-np","--no_proxy",default=True,action="store_false",help="For not using proxy system")
+parser.add_argument("-np","--no_proxy",default=False,action="store_false",help="For not using proxy system")
 
 #mutually exclusive parsers 
 
@@ -34,7 +36,7 @@ open_ports= []    #storing the list of open ports to show up in the end
 serv_dtc = []      #same with service detection 
 
 
-USE_PROXY = args.no_proxy # Toggle proxy on/off
+USE_PROXY = not args.no_proxy # Toggle proxy on/off
 
 proxy_ip = "185.59.100.55" #obiviously proxy ip
 proxy_port = 1080
@@ -145,7 +147,7 @@ def proxy_scan(target, port):
             s.settimeout(3)
             
             if s.connect_ex((target, port)) == 0:
-                banner = grab_banner(s) if (args.banner or args.detailed) else ""
+                banner = grab_ban(s) if (args.banner or args.detailed) else ""
                 s.close()
                 return True, banner
         except Exception as e:
@@ -230,7 +232,7 @@ def show_result():
     
         
 def scan(target, port):
-    if args.no_proxy:  # When --no-proxy is used
+    if USE_PROXY:  # When --no-proxy is used
         return port_scan(target, port)  # Original direct scan
     else:  # Default behavior (proxy rotation)
         return proxy_scan(target, port)  # New proxy logic
