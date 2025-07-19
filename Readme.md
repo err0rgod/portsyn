@@ -11,6 +11,20 @@ A multi-threaded, proxy-capable port scanner written in Python. Supports banner 
 - **Flexible output:** brief or detailed scan results
 - **Customizable port ranges and concurrency**
 
+## Setup
+
+1. Clone the repository and navigate to the project directory.
+2. Run the setup script to create a virtual environment and install dependencies:
+
+    ```sh
+    bash setup.sh
+    ```
+
+   This will:
+   - Create a Python virtual environment in the `venv` folder
+   - Activate the virtual environment
+   - Install all required packages from `requirements.txt`
+
 ## Usage
 
 ```sh
@@ -54,7 +68,7 @@ PROXY_LIST = [
 ## Requirements
 
 - Python 3.x
-- `PySocks` library (`pip install pysocks`)
+- See `requirements.txt` for Python package dependencies
 
 ## Legal Notice
 
