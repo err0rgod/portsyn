@@ -75,5 +75,4 @@ PROXY_LIST = [
 **Use this tool only on networks and systems you own or have explicit permission to test. Unauthorized scanning is illegal and unethical.**
 
 ---
-
-Inspired by [main.py](main.py) and related scripts in this
+By err0rgod
