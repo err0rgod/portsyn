@@ -6,8 +6,6 @@ import threading
 #for creating multiple threads
 import socks
 #for using socks5,4 to switch proxies 
-from itertools import cycle
-#looping over the list of proxies
 from sys import exit
 
 import random
