@@ -1,4 +1,4 @@
-# Advanced Python Port Scanner
+# Portsyn
 
 A multi-threaded, proxy-capable port scanner written in Python. Supports banner grabbing, service detection, and flexible output modes. Designed for fast and advanced scanning of network hosts.
 
